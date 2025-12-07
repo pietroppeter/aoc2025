@@ -91,5 +91,36 @@ assert testInput.parse.solve1 == 1227775554
 assert "day02.input".readFile.parse.solve1 == 55916882972
 
 
-  
-    
+func isInvalid2(num: int, times: int): bool =  
+  if (($num).len mod times) == 0:
+    let tens = 10^(($num).len div times)
+    var n = num
+    let m = n mod tens
+    n = num div tens
+    while n > 0:
+      if n mod tens != m:
+        return false
+      n = n div tens
+    return true
+
+assert isInvalid2(123123, 2)
+assert isInvalid2(121212, 3)
+
+func isInvalid2(num: int): bool =
+  for times in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
+    if times <= ($num).len and ($num).len mod times == 0 and isInvalid2(num, times):
+      return true
+
+assert isInvalid2(121212)
+assert isInvalid2(12121212)
+
+func solve2(ranges: seq[Range]): int =
+  for r in ranges:
+    #debugecho "r: ", r
+    for n in r.a .. r.b:
+      if n.isInvalid2:
+        #debugecho "  n: ", n
+        result.inc n
+
+echo testInput.parse.solve2
+echo "day02.input".readFile.parse.solve2
